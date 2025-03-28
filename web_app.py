@@ -58,7 +58,7 @@ def home():
 @app.route('/search', methods=['POST'])
 def search():
     domain = request.form.get('domain', '').strip().lower()
-    client_ip = request.remote_addr
+    client_ip = request.headers.get('CF-Connecting-IP') or request.remote_addr
     search_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     if not domain:
@@ -71,7 +71,7 @@ def search():
         cursor = conn.cursor()
 
         # Search for exact match
-        cursor.execute("SELECT domain FROM breached_domains WHERE domain = ?", (domain,))
+        cursor.execute("SELECT domain FROM breached_domains WHERE domain = ? LIMIT 1", (domain,))
         exact_match = cursor.fetchone()
 
         # Search for partial matches
@@ -146,7 +146,7 @@ def stats():
         # Get total number of domains in database
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
-        cursor.execute("SELECT COUNT(*) FROM breached_domains")
+        cursor.execute("SELECT COUNT(id) FROM breached_domains")
         total_domains = cursor.fetchone()[0]
 
         # Count total search queries in log
@@ -186,125 +186,7 @@ if __name__ == '__main__':
     # Create index.html if it doesn't exist
     if not os.path.exists('templates/index.html'):
         with open('templates/index.html', 'w') as f:
-            f.write('''
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Oracle Breach Domain Search</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        h1 {
-            color: #333;
-        }
-        .search-box {
-            margin: 20px 0;
-        }
-        input[type="text"] {
-            padding: 10px;
-            width: 70%;
-            font-size: 16px;
-        }
-        button {
-            padding: 10px 15px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        .result {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 5px;
-        }
-        .warning {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-        .success {
-            background-color: #d4edda;
-            color: #155724;
-        }
-        .partial-matches {
-            margin-top: 15px;
-        }
-    </style>
-</head>
-<body>
-    <h1>Oracle Breach Domain Search</h1>
-    <p>Enter a domain name to check if it appears in the alleged Oracle breach list.</p>
-
-    <div class="search-box">
-        <input type="text" id="domain-input" placeholder="Enter domain (e.g. example.com)">
-        <button onclick="searchDomain()">Check</button>
-    </div>
-
-    <script>
-        function searchDomain() {
-            const domain = document.getElementById('domain-input').value.trim();
-            if (!domain) {
-                alert('Please enter a domain');
-                return;
-            }
-
-            // Send request to server
-            fetch('/search', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `domain=${encodeURIComponent(domain)}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                const resultDiv = document.getElementById('result');
-                resultDiv.style.display = 'block';
-
-                if (data.error) {
-                    resultDiv.className = 'result warning';
-                    resultDiv.innerHTML = `<strong>Error: ${data.error}</strong>`;
-                    return;
-                }
-
-                if (data.found) {
-                    resultDiv.className = 'result warning';
-                    resultDiv.innerHTML = `<strong>${data.message}</strong>`;
-                } else {
-                    resultDiv.className = 'result success';
-                    resultDiv.innerHTML = `<strong>${data.message}</strong>`;
-                }
-
-                // Show partial matches if any
-                if (data.partial_matches && data.partial_matches.length > 0) {
-                    let partialMatchesHtml = '<div class="partial-matches"><p>Similar domains found in the database:</p><ul>';
-                    data.partial_matches.forEach(match => {
-                        partialMatchesHtml += `<li>${match}</li>`;
-                    });
-                    partialMatchesHtml += '</ul></div>';
-                    resultDiv.innerHTML += partialMatchesHtml;
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.');
-            });
-        }
-
-        // Allow Enter key to trigger search
-        document.getElementById('domain-input').addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                searchDomain();
-            }
-        });
-    </script>
-</body>
-</html>
-            ''')
+            f.write('It works!') # TODO: Change
 
     # Run the application
-    app.run(host='0.0.0.0', port=5002)
+    app.run(host='0.0.0.0', port=80)

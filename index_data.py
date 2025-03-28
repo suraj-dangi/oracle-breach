@@ -14,6 +14,10 @@ os.makedirs('./data', exist_ok=True)
 # Path to the database
 DB_PATH = './data/oracle_breach.db'
 
+# Create database connection
+conn = sqlite3.connect(DB_PATH)
+cursor = conn.cursor()
+
 
 def index_data(domains_file):
     """
@@ -23,10 +27,6 @@ def index_data(domains_file):
         domains_file (str): Path to the file containing domains, one per line.
     """
     print(f"Indexing data from file: {domains_file}")
-
-    # Create database connection
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
 
     # Create table if it doesn't exist
     cursor.execute('''
@@ -58,9 +58,6 @@ def index_data(domains_file):
         print(f"Error indexing data: {e}")
         conn.rollback()
         return False
-    finally:
-        # Close connection
-        conn.close()
 
     return True
 
@@ -71,10 +68,6 @@ def index_hardcoded_data():
     Used as a fallback if no file is provided.
     """
     print("Indexing hardcoded domain data")
-
-    # Create database connection
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
 
     # Create table if it doesn't exist
     cursor.execute('''
@@ -118,10 +111,10 @@ def index_hardcoded_data():
     conn.commit()
     print(f"Successfully indexed {len(domains)} hardcoded domains")
 
-    # Close connection
-    conn.close()
     return True
 
+def index_column():
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_domain ON breached_domains (domain)")
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
@@ -131,4 +124,9 @@ if __name__ == "__main__":
         print("No domains file provided, using hardcoded domains")
         index_hardcoded_data()
 
+    index_column() # does the actual indexing :)
+
     print(f"Data indexing complete. Database stored at {DB_PATH}")
+
+    # Close connection
+    conn.close()
