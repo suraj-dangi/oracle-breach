@@ -12,6 +12,7 @@ This application provides a simple web interface for anyone to search if a compa
 
 ## Project Structure
 oracle-breach-checker/
+```
 ├── docker-compose.yml     # Docker Compose configuration
 ├── Dockerfile             # Docker image configuration
 ├── index_data.py          # Script to index domain data
@@ -20,6 +21,7 @@ oracle-breach-checker/
 ├── Company.List.txt       # List of breached domains
 └── data/                  # Persistent data storage
 └── oracle_breach.db   # SQLite database (created automatically)
+```
 
 ## Quick Start
 
