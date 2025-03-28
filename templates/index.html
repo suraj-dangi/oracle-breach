@@ -15,228 +15,64 @@
     <meta name="twitter:description" content="Free tool to check if your domain was in the Oracle data breach">
     <link rel="canonical" href="https://oracle.breachlookup.me/">
 
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background-color: #f8f9fa;
-            margin: 0;
-            padding: 20px;
-            color: #333;
-            line-height: 1.6;
-        }
+    <link rel="stylesheet" href="style.css">
 
-        .container {
-            max-width: 600px;
-            margin: 40px auto;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-            padding: 30px;
-        }
-
-        h1 {
-            color: #2c3e50;
-            margin-top: 0;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        .description {
-            color: #555;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-
-        .search-box {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        input[type="text"] {
-            flex: 1;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 16px;
-            transition: border-color 0.2s;
-        }
-
-        input[type="text"]:focus {
-            outline: none;
-            border-color: #4CAF50;
-            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
-        }
-
-        button {
-            padding: 12px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 500;
-            transition: background-color 0.2s;
-        }
-
-        button:hover {
-            background-color: #3d8b40;
-        }
-
-        #result {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 6px;
-            display: none;
-        }
-
-        .breach {
-            background-color: #ffeeee;
-            border-left: 4px solid #e74c3c;
-            color: #c0392b;
-        }
-
-        .safe {
-            background-color: #e8f5e9;
-            border-left: 4px solid #2ecc71;
-            color: #27ae60;
-        }
-
-        .warning {
-            background-color: #fff8e1;
-            border-left: 4px solid #ffc107;
-            padding: 15px;
-            border-radius: 6px;
-            margin-top: 30px;
-            position: relative;
-        }
-
-        .warning:before {
-            content: "⚠️";
-            position: absolute;
-            left: 15px;
-            top: 15px;
-            font-size: 20px;
-        }
-
-        .warning-content {
-            margin-left: 35px;
-        }
-
-        .warning strong {
-            color: #d35400;
-        }
-
-        .partial-matches {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px dashed #ddd;
-        }
-
-        .partial-matches p {
-            margin-bottom: 8px;
-            color: #555;
-        }
-
-        pre {
-            background-color: #f5f5f5;
-            padding: 10px;
-            border-radius: 4px;
-            overflow-x: auto;
-            margin: 0;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-        }
-    </style>
+    <script async type="text/javascript" src="main.js"></script>
 </head>
 <body>
     <div class="container">
         <h1>Oracle Breach Domain Search</h1>
         <p class="description">Enter a domain name to check if it appears in the alleged Oracle breach list.</p>
-        
+
         <div class="search-box">
             <input type="text" id="domainInput" placeholder="Enter domain (e.g. example.com)" autofocus>
             <button onclick="checkDomain()">Check</button>
         </div>
-        
+
         <div id="result"></div>
 
         <div class="warning">
             <div class="warning-content">
-                <strong>Disclaimer:</strong><br/>Threat actors claim they have hacked Oracle and published approximately 140,000 domains. While we cannot verify the authenticity of the data, samples and affected customers are verified by individual researchers.
+                <strong>Disclaimer:</strong><br/>We cannot verify the authenticity of the data. The information provided here is for threat intelligence purposes, and should be treated accordingly.
             </div>
         </div>
+
+        <div class="incident-info">
+    <h3>About the Oracle Cloud Breach</h3>
+    <p>In mid-March 2025, a threat actor publicly claimed to have compromised Oracle Cloud Infrastructure, exfiltrating over 6 million records affecting 140,000+ tenants. The stolen data includes:</p>
+    <div class="data-grid">
+      <div class="data-column">
+          <div class="data-item">Encrypted SSO credentials</div>
+          <div class="data-item">Java Keystore (JKS) files</div>
+      </div>
+      <div class="data-column">
+          <div class="data-item">Key files</div>
+          <div class="data-item">Oracle Enterprise Manager JPS keys</div>
+      </div>
     </div>
 
-    <script>
-        const searchElement = document.getElementById('domainInput');
-        const resultElement = document.getElementById('result');
-        
-        // Handle Enter key press
-        searchElement.addEventListener('keypress', e => {
-            if (e.key === 'Enter') checkDomain();
-        });
+    <h3>If you are affected</h3>
+    <div class="action-steps">
+        <div class="step">
+            <h4>1. Reset All Credentials</h4>
+            <p>Immediately change passwords and rotate API keys for all Oracle Cloud services and any systems that share credentials.</p>
+        </div>
+        <div class="step">
+            <h4>2. Audit Account Activity</h4>
+            <p>Review Oracle Cloud logs for suspicious activity and check for unauthorized changes to configurations or services.</p>
+        </div>
+        <div class="step">
+            <h4>3. Enable MFA</h4>
+            <p>Implement multi-factor authentication across all privileged accounts if not already enabled.</p>
+        </div>
+        <div class="step">
+            <h4>4. Contact Oracle Support</h4>
+            <p>Report the compromise to Oracle Cloud support and follow their recommended mitigation procedures.</p>
+        </div>
+    </div>
+    <p class="source">Source: <a href="https://www.cloudsek.com/blog/the-biggest-supply-chain-hack-of-2025-6m-records-for-sale-exfiltrated-from-oracle-cloud-affecting-over-140k-tenants" target="_blank" rel="noopener noreferrer">CloudSEK Threat Intelligence Report</a></p>
+</div>
 
-        async function checkDomain() {
-            const domain = searchElement.value.trim();
-            
-            if (!domain) {
-                showResult('Please enter a domain name', true);
-                return;
-            }
-
-            try {
-                // Send request to server
-                const response = await fetch('/search', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `domain=${encodeURIComponent(domain)}`
-                });
-
-                const data = await response.json();
-                
-                if (data.error) {
-                    showResult(`Error: ${data.error}`, true);
-                    return;
-                }
-
-                let resultHTML = '';
-                
-                if (data.found) {
-                    resultHTML = `<strong>${domain}</strong> appears in the breach list.<p>Please change your passwords immediately.</p>`;
-                    resultElement.className = 'breach';
-                } else {
-                    resultHTML = `<strong>${domain}</strong> does not appear in the breach list.`;
-                    resultElement.className = 'safe';
-                }
-
-                // Show partial matches if any
-                if (data.partial_matches && data.partial_matches.length > 0) {
-                    resultHTML += `
-                        <div class="partial-matches">
-                            <p>Similar domains found in the database:</p>
-                            <pre>${data.partial_matches.join('\n')}</pre>
-                        </div>
-                    `;
-                }
-
-                resultElement.innerHTML = resultHTML;
-                resultElement.style.display = 'block';
-                
-            } catch (error) {
-                showResult('An error occurred while checking the domain', true);
-                console.error('Error:', error);
-            }
-        }
-
-        function showResult(message, isError) {
-            resultElement.innerHTML = message;
-            resultElement.className = isError ? 'breach' : 'safe';
-            resultElement.style.display = 'block';
-        }
-    </script>
+    </div>
 </body>
 </html>
