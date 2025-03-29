@@ -7,6 +7,8 @@ window.addEventListener('DOMContentLoaded', e => {
       if (e.key === 'Enter') checkDomain();
   });
 
+  document.getElementById('chkBtn').addEventListener('click', checkDomain);
+
   async function checkDomain() {
       const domain = searchElement.value.trim();
 

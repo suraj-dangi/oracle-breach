@@ -11,6 +11,7 @@ import sqlite3
 import os
 import logging
 import datetime
+import threading
 from logging.handlers import RotatingFileHandler
 
 app = Flask(__name__)
@@ -179,6 +180,21 @@ def stats():
         return jsonify({"error": str(e)}), 500
 
 
+def run_http():
+    app.run(host='0.0.0.0', port=80)
+
+def run_https():
+    from OpenSSL import SSL
+    os.makedirs('certs', exist_ok=True)
+    if not os.path.exists('certs/server.key'):
+      from self_sign import generate_cert
+      generate_cert()
+
+    context = SSL.Context(SSL.SSLv23_METHOD)
+    context.use_privatekey_file('certs/server.key')
+    context.use_certificate_file('certs/server.crt')
+    app.run(host='0.0.0.0', port=443, ssl_context=context)
+
 if __name__ == '__main__':
     # Ensure templates directory exists
     os.makedirs('templates', exist_ok=True)
@@ -189,4 +205,8 @@ if __name__ == '__main__':
             f.write('It works!') # TODO: Change
 
     # Run the application
-    app.run(host='0.0.0.0', port=80)
+    http_thread = threading.Thread(target=run_http)
+    https_thread = threading.Thread(target=run_https)
+
+    http_thread.start()
+    https_thread.start()

@@ -14,10 +14,9 @@
     <meta name="twitter:title" content="Oracle Breach Domain Search">
     <meta name="twitter:description" content="Free tool to check if your domain was in the Oracle data breach">
     <link rel="canonical" href="https://oracle.breachlookup.me/">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
-    <link rel="stylesheet" href="style.css">
-
-    <script async type="text/javascript" src="main.js"></script>
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
 </head>
 <body>
     <div class="container">
@@ -26,7 +25,7 @@
 
         <div class="search-box">
             <input type="text" id="domainInput" placeholder="Enter domain (e.g. example.com)" autofocus>
-            <button onclick="checkDomain()">Check</button>
+            <button id='chkBtn'>Check</button>
         </div>
 
         <div id="result"></div>
@@ -72,7 +71,6 @@
     </div>
     <p class="source">Source: <a href="https://www.cloudsek.com/blog/the-biggest-supply-chain-hack-of-2025-6m-records-for-sale-exfiltrated-from-oracle-cloud-affecting-over-140k-tenants" target="_blank" rel="noopener noreferrer">CloudSEK Threat Intelligence Report</a></p>
 </div>
-
     </div>
 </body>
 </html>
